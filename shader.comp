@@ -1,0 +1,17 @@
+#version 450
+
+// Process data in workgroups of 256 threads
+layout(local_size_x = 256) in;
+
+// Bind a storage buffer containing our array
+layout(set = 0, binding = 0) buffer DataBuffer {
+    float data[];
+};
+
+void main() {
+    // Get the global thread ID
+    uint index = gl_GlobalInvocationID.x;
+    
+    // Square the data at this index
+    data[index] = data[index] * data[index];
+}
