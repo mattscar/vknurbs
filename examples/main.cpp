@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "step_parser.h"
+
 // Load binary file
 std::vector<char> readFile(const std::string& filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
@@ -30,6 +32,21 @@ uint32_t findMemoryType(vk::PhysicalDevice physicalDevice, uint32_t typeFilter,
 }
 
 int main() {
+
+    // Create STEP file parser
+    StepParser parser;
+    std::shared_ptr<Shell> myShell = parser.parse("nurbs_surface.stp");
+
+    if (myShell) {
+        std::cout << "Successfully parsed Shell ID: #" << myShell->stepId << "\n";
+        std::cout << "Number of Faces: " << myShell->faces.size() << "\n";
+        if (!myShell->faces.empty()) {
+            std::cout << "First Face bounds count: " << myShell->faces[0]->bounds.size() << "\n";
+        }
+    } else {
+        std::cout << "Failed to parse shell geometry." << std::endl;
+    }
+
     // Create the instance
     vk::ApplicationInfo appInfo {
         .pApplicationName = "vkNURBS application",

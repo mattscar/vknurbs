@@ -9,7 +9,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Vulkan REQUIRED)
 
 # Define the executable
-add_executable(VulkanCompute main.cpp)
+add_executable(VulkanCompute
+    examples/brep.h
+    examples/step_parser.h
+    examples/step_parser.cpp
+    examples/main.cpp
+)
 
 # Link the Vulkan library to the executable
 target_link_libraries(VulkanCompute PRIVATE Vulkan::Vulkan)
@@ -19,7 +24,7 @@ find_program(GLSLC_EXECUTABLE glslc HINTS $ENV{VULKAN_SDK}/bin)
 if(GLSLC_EXECUTABLE)
     add_custom_command(
         TARGET VulkanCompute POST_BUILD
-        COMMAND ${GLSLC_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/shader.comp -o $<TARGET_FILE_DIR:VulkanCompute>/shader.spv
+        COMMAND ${GLSLC_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/shaders/shader.comp -o $<TARGET_FILE_DIR:VulkanCompute>/shader.spv
         COMMENT "Compiling shader.comp to shader.spv using glslc"
         VERBATIM
     )
